@@ -16,6 +16,8 @@ namespace SportsLeague.DataAccess.Context
 
         public DbSet<Referee> Referees => Set<Referee>();              // NUEVO (Fase 3)
         public DbSet<TournamentTeam> TournamentTeams => Set<TournamentTeam>(); // NUEVO (Fase 3)
+
+        public DbSet<Sponsor> Sponsors { get; set; } // NUEVO (Parcial 2)
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Team>(entity =>

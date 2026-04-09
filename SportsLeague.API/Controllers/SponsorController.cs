@@ -48,9 +48,37 @@ public class SponsorController : ControllerBase
 
             return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
         }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
+    // ── NUEVO MÉTODO BLOQUE B: ASOCIACIÓN ──
+    [HttpPost("{id}/associate-tournament")]
+    public async Task<ActionResult> AssociateTournament(int id, [FromBody] TournamentSponsorRequestDTO request)
+    {
+        try
+        {
+            // El 'id' que viene en la URL es el SponsorId
+            // El 'request' trae el TournamentId y el ContractAmount
+            await _sponsorService.AssociateTournamentAsync(id, request.TournamentId, request.ContractAmount);
+
+            return Ok(new { message = "Patrocinador vinculado exitosamente al torneo." });
+        }
+        catch (KeyNotFoundException ex)
+        {
+            // Si no encuentra el Torneo o el Sponsor
+            return NotFound(new { message = ex.Message });
+        }
         catch (InvalidOperationException ex)
         {
-            return Conflict(new { message = ex.Message });
+            // Si ya existe la relación o el torneo está finalizado
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = "Ocurrió un error inesperado: " + ex.Message });
         }
     }
 }

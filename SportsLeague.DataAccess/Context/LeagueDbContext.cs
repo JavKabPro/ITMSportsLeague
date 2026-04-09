@@ -18,6 +18,7 @@ namespace SportsLeague.DataAccess.Context
         public DbSet<TournamentTeam> TournamentTeams => Set<TournamentTeam>(); // NUEVO (Fase 3)
 
         public DbSet<Sponsor> Sponsors { get; set; } // NUEVO (Parcial 2)
+        public DbSet<TournamentSponsor> TournamentSponsors { get; set; } // NUEVO (Parcial 2)
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Team>(entity =>
@@ -137,6 +138,28 @@ namespace SportsLeague.DataAccess.Context
                 // Índice único compuesto: un equipo solo una vez por torneo
                 entity.HasIndex(tt => new { tt.TournamentId, tt.TeamId })
                       .IsUnique();
+            });
+            base.OnModelCreating(modelBuilder);
+
+            // ── TournamentSponsor Configuration ──
+            modelBuilder.Entity<TournamentSponsor>(entity =>
+            {
+                // 1. Índice Único Compuesto (La clave del parcial)
+                // Esto evita que Coca-Cola patrocine dos veces la "Liga 2025-1"
+                entity.HasIndex(ts => new { ts.TournamentId, ts.SponsorId }).IsUnique();
+
+                // 2. Relación con Torneo
+                entity.HasOne(ts => ts.Tournament)
+                      .WithMany(t => t.TournamentSponsors)
+                      .HasForeignKey(ts => ts.TournamentId);
+
+                // 3. Relación con Patrocinador
+                entity.HasOne(ts => ts.Sponsor)
+                      .WithMany(s => s.TournamentSponsors)
+                      .HasForeignKey(ts => ts.SponsorId);
+
+                // Configurar el decimal para que SQL no de advertencias de precisión
+                entity.Property(ts => ts.ContractAmount).HasPrecision(18, 2);
             });
 
 

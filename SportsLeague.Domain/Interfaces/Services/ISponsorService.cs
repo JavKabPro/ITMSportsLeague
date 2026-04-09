@@ -9,5 +9,8 @@ namespace SportsLeague.Domain.Interfaces.Services
         Task<Sponsor> CreateAsync(Sponsor sponsor);
         Task UpdateAsync(Sponsor sponsor);
         Task DeleteAsync(int id);
+
+        Task<TournamentSponsor> AssociateTournamentAsync(TournamentSponsor association);
+        Task<TournamentSponsor> AssociateTournamentAsync(int sponsorId, int tournamentId, decimal amount);
     }
 }

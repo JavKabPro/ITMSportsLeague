@@ -54,31 +54,28 @@ public class SponsorController : ControllerBase
         }
     }
 
-    // ── NUEVO MÉTODO BLOQUE B: ASOCIACIÓN ──
-    [HttpPost("{id}/associate-tournament")]
+
+    [HttpPost("{id}/tournaments")]
     public async Task<ActionResult> AssociateTournament(int id, [FromBody] TournamentSponsorRequestDTO request)
     {
         try
         {
-            // El 'id' que viene en la URL es el SponsorId
-            // El 'request' trae el TournamentId y el ContractAmount
+            // El 'id' de la URL es el SponsorId
             await _sponsorService.AssociateTournamentAsync(id, request.TournamentId, request.ContractAmount);
-
             return Ok(new { message = "Patrocinador vinculado exitosamente al torneo." });
         }
         catch (KeyNotFoundException ex)
         {
-            // Si no encuentra el Torneo o el Sponsor
             return NotFound(new { message = ex.Message });
         }
         catch (InvalidOperationException ex)
         {
-            // Si ya existe la relación o el torneo está finalizado
+            // Aquí es donde mostrarás el error 400/409 en el video
             return BadRequest(new { message = ex.Message });
         }
         catch (Exception ex)
         {
-            return StatusCode(500, new { message = "Ocurrió un error inesperado: " + ex.Message });
+            return StatusCode(500, new { message = "Error interno: " + ex.Message });
         }
     }
 }

@@ -6,7 +6,15 @@ using SportsLeague.Domain.Interfaces.Repositories.SportsLeague.Domain.Interfaces
 namespace SportsLeague.DataAccess.Repositories
 {
     public class SponsorRepository : GenericRepository<Sponsor>, ISponsorRepository
+
     {
+        public override async Task<Sponsor?> GetByIdAsync(int id)
+        {
+            return await _context.Sponsors
+                .Include(s => s.TournamentSponsors) // <--- ESTO ES LA CLAVE
+                    .ThenInclude(ts => ts.Tournament) // Traemos el Torneo real
+                .FirstOrDefaultAsync(s => s.Id == id);
+        }
         public SponsorRepository(LeagueDbContext context) : base(context)
         {
         }

@@ -103,5 +103,17 @@ namespace SportsLeague.Domain.Services
 
             return await AssociateTournamentAsync(association);
         }
+        public async Task<IEnumerable<Tournament>> GetSponsorTournamentsAsync(int sponsorId)
+        {
+            //  Buscamos el sponsor incluyendo sus relaciones
+            var sponsor = await _repository.GetByIdAsync(sponsorId);
+
+            if (sponsor == null)
+                throw new KeyNotFoundException($"No se encontró el patrocinador con ID {sponsorId}");
+
+            var tournaments = sponsor.TournamentSponsors.Select(ts => ts.Tournament);
+
+            return tournaments;
+        }
     }
 }

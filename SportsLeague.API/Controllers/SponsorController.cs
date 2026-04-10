@@ -70,12 +70,57 @@ public class SponsorController : ControllerBase
         }
         catch (InvalidOperationException ex)
         {
-            // Aquí es donde mostrarás el error 400/409 en el video
+            // Aquí es donde se muestra el error 400/409 en el video
             return BadRequest(new { message = ex.Message });
         }
         catch (Exception ex)
         {
             return StatusCode(500, new { message = "Error interno: " + ex.Message });
+        }
+    }
+    [HttpGet("{id}/tournaments")]
+    public async Task<ActionResult<IEnumerable<TournamentResponseDTO>>> GetTournaments(int id)
+    {
+        try
+        {
+            // Llamamos al servicio que acabamos de crear
+            var tournaments = await _sponsorService.GetSponsorTournamentsAsync(id);
+
+            // Mapeamos la lista de Torneos a su DTO de respuesta
+            var response = _mapper.Map<IEnumerable<TournamentResponseDTO>>(tournaments);
+
+            return Ok(response);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = "Error al listar los torneos: " + ex.Message });
+        }
+    }
+    [HttpPut("{id}")]
+    public async Task<ActionResult> Update(int id, [FromBody] SponsorRequestDTO request)
+    {
+        try
+        {
+            // 1. Validar si existe
+            var existingSponsor = await _sponsorService.GetByIdAsync(id);
+            if (existingSponsor == null)
+                return NotFound(new { message = $"No se encontró el patrocinador con ID {id}" });
+
+            // 2. Mapear los cambios del DTO al objeto que ya existe en la BD
+            _mapper.Map(request, existingSponsor);
+
+            // 3. Persistir los cambios
+            await _sponsorService.UpdateAsync(existingSponsor);
+
+            return Ok(new { message = "Patrocinador actualizado correctamente." });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = "Error al actualizar: " + ex.Message });
         }
     }
 }

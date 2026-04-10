@@ -12,5 +12,6 @@ namespace SportsLeague.Domain.Interfaces.Services
 
         Task<TournamentSponsor> AssociateTournamentAsync(TournamentSponsor association);
         Task<TournamentSponsor> AssociateTournamentAsync(int sponsorId, int tournamentId, decimal amount);
+        Task<IEnumerable<Tournament>> GetSponsorTournamentsAsync(int sponsorId);
     }
 }

@@ -19,6 +19,8 @@ namespace SportsLeague.DataAccess.Context
 
         public DbSet<Sponsor> Sponsors { get; set; } // NUEVO (Parcial 2)
         public DbSet<TournamentSponsor> TournamentSponsors { get; set; } // NUEVO (Parcial 2)
+
+        public DbSet<Match> Matches => Set<Match>();
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Team>(entity =>
@@ -161,8 +163,47 @@ namespace SportsLeague.DataAccess.Context
                 // Configurar el decimal para que SQL no de advertencias de precisión
                 entity.Property(ts => ts.ContractAmount).HasPrecision(18, 2);
             });
+            // ── Match Configuration ──
+            modelBuilder.Entity<Match>(entity =>
+            {
+                entity.HasKey(m => m.Id);
+                entity.Property(m => m.MatchDate)
+                      .IsRequired();
+                entity.Property(m => m.Venue)
+                      .HasMaxLength(150);
+                entity.Property(m => m.Matchday)
+                      .IsRequired();
+                entity.Property(m => m.Status)
+                      .IsRequired();
+                entity.Property(m => m.CreatedAt)
+                      .IsRequired();
+                entity.Property(m => m.UpdatedAt)
+                      .IsRequired(false);
 
+                // Relación con Tournament (Cascade: eliminar torneo elimina partidos)
+                entity.HasOne(m => m.Tournament)
+                      .WithMany(t => t.Matches)
+                      .HasForeignKey(m => m.TournamentId)
+                      .OnDelete(DeleteBehavior.Cascade);
 
+                // Relación con HomeTeam (Restrict: evita ciclo de cascada)
+                entity.HasOne(m => m.HomeTeam)
+                      .WithMany(t => t.HomeMatches)
+                      .HasForeignKey(m => m.HomeTeamId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                // Relación con AwayTeam (Restrict: evita ciclo de cascada)
+                entity.HasOne(m => m.AwayTeam)
+                      .WithMany(t => t.AwayMatches)
+                      .HasForeignKey(m => m.AwayTeamId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                // Relación con Referee (Restrict: no eliminar árbitro con partidos)
+                entity.HasOne(m => m.Referee)
+                      .WithMany(r => r.Matches)
+                      .HasForeignKey(m => m.RefereeId)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
 
         }
     }

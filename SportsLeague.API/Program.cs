@@ -40,6 +40,8 @@ builder.Services.AddScoped<ISponsorService, SponsorService>();          // NUEVO
 builder.Services.AddScoped<IMatchService, MatchService>();              // NUEVO FASE 4
 builder.Services.AddScoped<IMatchEventService, MatchEventService>();    // NUEVO FASE 5
 builder.Services.AddScoped<MatchValidationHelper>();                    // NUEVO FASE 5
+builder.Services.AddScoped<IStandingsService, StandingsService>();      // NUEVO FASE 6
+
 
 
 

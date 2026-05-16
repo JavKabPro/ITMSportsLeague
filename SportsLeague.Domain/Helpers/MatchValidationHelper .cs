@@ -20,14 +20,16 @@ namespace SportsLeague.Domain.Helpers
         public async Task<Match> ValidateMatchForEventAsync(int matchId)
         {
             var match = await _matchRepository.GetByIdAsync(matchId);
-            if (match == null)
-                throw new KeyNotFoundException(
-                    $"No se encontró el partido con ID {matchId}");
 
-            if (match.Status != MatchStatus.InProgress
-                && match.Status != MatchStatus.Finished)
-                throw new InvalidOperationException(
-                    "Solo se pueden registrar eventos en partidos InProgress o Finished");
+            if (match == null)
+                throw new KeyNotFoundException($"No se encontró el partido con ID {matchId}");
+
+            if (match.Status != MatchStatus.Scheduled &&
+                match.Status != MatchStatus.InProgress &&
+                match.Status != MatchStatus.Finished)
+            {
+                throw new InvalidOperationException("El estado actual del partido no permite registrar eventos.");
+            }
 
             return match;
         }
@@ -51,6 +53,11 @@ namespace SportsLeague.Domain.Helpers
             if (minute < 1 || minute > 120)
                 throw new InvalidOperationException(
                     "El minuto debe estar entre 1 y 120");
+        }
+
+        internal void ValidatePlayerInMatch(Match match, Player player)
+        {
+            throw new NotImplementedException();
         }
     }
 }

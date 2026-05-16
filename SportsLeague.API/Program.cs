@@ -28,6 +28,7 @@ builder.Services.AddScoped<IMatchRepository, MatchRepository>();                
 builder.Services.AddScoped<IMatchResultRepository, MatchResultRepository>(); // NUEVO FASE 5
 builder.Services.AddScoped<IGoalRepository, GoalRepository>();          // NUEVO FASE 5
 builder.Services.AddScoped<ICardRepository, CardRepository>();          // NUEVO FASE 5
+builder.Services.AddScoped<IMatchLineupRepository, MatchLineupRepository>(); // MOMENTO EVALLUATIVO 4
 
 
 
@@ -41,6 +42,7 @@ builder.Services.AddScoped<IMatchService, MatchService>();              // NUEVO
 builder.Services.AddScoped<IMatchEventService, MatchEventService>();    // NUEVO FASE 5
 builder.Services.AddScoped<MatchValidationHelper>();                    // NUEVO FASE 5
 builder.Services.AddScoped<IStandingsService, StandingsService>();      // NUEVO FASE 6
+builder.Services.AddScoped<IMatchLineupService, MatchLineupService>();  //  MOMENTO EVALLUATIVO 4
 
 
 

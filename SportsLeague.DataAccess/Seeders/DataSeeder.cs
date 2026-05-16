@@ -49,6 +49,14 @@ namespace SportsLeague.DataAccess.Seeders
                 ("William", "Tesillo", PlayerPosition.Defender, 3),
                 ("Edwin", "Cardona", PlayerPosition.Midfielder, 10),
                 ("Alfredo", "Morelos", PlayerPosition.Forward, 9),
+             // --- Nuevos jugadores ---
+                ("Felipe", "Aguirre", PlayerPosition.Defender, 4),
+                ("Joan", "Castro", PlayerPosition.Defender, 2),
+                ("Samuel", "Velásquez", PlayerPosition.Defender, 6),
+                ("Jorman", "Campuzano", PlayerPosition.Midfielder, 5),
+                ("Juan Manuel", "Zapata", PlayerPosition.Midfielder, 8),
+                ("Dairon", "Asprilla", PlayerPosition.Forward, 17),
+                ("Kevin", "Viveros", PlayerPosition.Forward, 11),
             },
             // 2. Independiente Medellín
             new[] {
@@ -236,6 +244,33 @@ namespace SportsLeague.DataAccess.Seeders
                     TeamId = team.Id
                 });
             }
+            await context.SaveChangesAsync();
+            // ═══ 6.PARTIDOS DE PRUEBA(Para validar Alineaciones) ═══
+            var matchScheduled = new Match
+            {
+                TournamentId = tournament.Id,
+                HomeTeamId = teams[0].Id, // Atlético Nacional
+                AwayTeamId = teams[2].Id, // Independiente Medellín
+                RefereeId = referees[0].Id, // Wilmar Roldán
+                MatchDate = DateTime.UtcNow.AddDays(7),
+                Venue = "Atanasio Girardot",
+                Matchday = 1,
+                Status = MatchStatus.Scheduled 
+            };
+
+            var matchFinished = new Match
+            {
+                TournamentId = tournament.Id,
+                HomeTeamId = teams[5].Id, // América de Cali
+                AwayTeamId = teams[6].Id, // Deportivo Cali
+                RefereeId = referees[2].Id, // Andrés Rojas
+                MatchDate = DateTime.UtcNow.AddDays(-1),
+                Venue = "Pascual Guerrero",
+                Matchday = 1,
+                Status = MatchStatus.Finished 
+            };
+
+            context.Matches.AddRange(matchScheduled, matchFinished);
             await context.SaveChangesAsync();
         }
     }

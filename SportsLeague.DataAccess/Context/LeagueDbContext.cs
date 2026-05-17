@@ -287,9 +287,9 @@ namespace SportsLeague.DataAccess.Context
 
                 // Relación con Player (Restrict: No permite borrar un jugador si está en una alineación)
                 entity.HasOne(ml => ml.Match)
-                .WithMany(m => m.MatchLineups) 
-                .HasForeignKey(ml => ml.MatchId)
-                .OnDelete(DeleteBehavior.Cascade);
+                    .WithMany(m => m.MatchLineups) 
+                    .HasForeignKey(ml => ml.MatchId)
+                    .OnDelete(DeleteBehavior.Cascade);
 
                 // Garantiza que MatchId + PlayerId no se repitan en la tabla
                 entity.HasIndex(ml => new { ml.MatchId, ml.PlayerId })
